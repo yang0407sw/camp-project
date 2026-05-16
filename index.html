@@ -1,0 +1,602 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🏕️ 營隊成果發表</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg-deep: #0a0a1a;
+    --text: #f0eff4;
+    --text-dim: rgba(240,239,244,.55);
+    --glass: rgba(255,255,255,.05);
+    --glass-border: rgba(255,255,255,.09);
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body {
+    font-family: 'Noto Sans TC', 'Helvetica Neue', sans-serif;
+    background: var(--bg-deep); color: var(--text);
+    min-height:100vh; overflow-x:hidden;
+  }
+
+  @keyframes fadeIn  { from{opacity:0;transform:translateY(18px)} to{opacity:1;transform:translateY(0)} }
+  @keyframes slideUp { from{opacity:0;transform:translateY(30px)} to{opacity:1;transform:translateY(0)} }
+  @keyframes pulse   { 0%,100%{transform:scale(1)} 50%{transform:scale(1.07)} }
+  @keyframes glow    { 0%,100%{box-shadow:0 0 24px rgba(255,209,102,.25)} 50%{box-shadow:0 0 48px rgba(255,209,102,.55)} }
+  @keyframes float   { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-10px)} }
+
+  .screen { display:none; min-height:100vh; }
+  .screen.active { display:block; }
+
+  /* hub */
+  #hub { background:radial-gradient(ellipse at 28% 18%,#1a1a3e 0%,var(--bg-deep) 55%,#0d0d24 100%); position:relative; }
+  .particle { position:absolute; width:4px; height:4px; border-radius:50%; background:rgba(255,255,255,.04); animation:float 5s ease-in-out infinite; }
+  .hub-inner { max-width:820px; margin:0 auto; padding:44px 20px; position:relative; z-index:1; }
+  .hub-title { text-align:center; margin-bottom:44px; animation:fadeIn .8s ease both; }
+  .hub-title h1 { font-size:clamp(28px,5vw,40px); font-weight:900; letter-spacing:2px; background:linear-gradient(135deg,#FFD166,#FF6B35,#E63946); -webkit-background-clip:text; -webkit-text-fill-color:transparent; }
+  .hub-title p { font-size:14px; color:var(--text-dim); margin-top:10px; letter-spacing:1px; }
+  .progress-track { max-width:340px; margin:18px auto 0; height:7px; background:rgba(255,255,255,.07); border-radius:4px; overflow:hidden; }
+  .progress-fill { height:100%; border-radius:4px; transition:width .7s ease; background:linear-gradient(90deg,#2A9D8F,#FFD166,#FF6B35); }
+
+  .branch-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(230px,1fr)); gap:20px; margin-bottom:44px; }
+  .branch-card { background:var(--glass); border:1.5px solid var(--glass-border); border-radius:22px; padding:26px; cursor:pointer; transition:all .35s cubic-bezier(.4,0,.2,1); position:relative; overflow:hidden; animation:fadeIn .6s ease both; }
+  .branch-card:hover { transform:translateY(-7px) scale(1.03); border-color:rgba(255,255,255,.18); }
+  .branch-card .emoji { font-size:42px; margin-bottom:12px; display:block; }
+  .branch-card h3 { font-size:21px; font-weight:800; margin-bottom:8px; }
+  .branch-card .desc { font-size:13px; color:var(--text-dim); line-height:1.72; display:-webkit-box; -webkit-line-clamp:3; -webkit-box-orient:vertical; overflow:hidden; }
+  .branch-card .enter { margin-top:16px; font-size:13px; font-weight:600; opacity:.75; }
+  .badge-done { position:absolute; top:12px; right:12px; background:#2A9D8F; border-radius:8px; padding:4px 11px; font-size:11px; font-weight:700; color:#fff; }
+
+  .center-star { text-align:center; animation:fadeIn 1s ease .5s both; }
+  .star-btn { display:inline-flex; flex-direction:column; align-items:center; padding:34px 52px; border-radius:26px; border:2px dashed rgba(255,255,255,.1); background:rgba(255,255,255,.025); cursor:default; transition:all .5s; }
+  .star-btn.unlocked { border:2px solid rgba(255,209,102,.5); background:linear-gradient(135deg,rgba(255,209,102,.12),rgba(255,107,53,.12)); cursor:pointer; animation:glow 2.5s ease-in-out infinite; }
+  .star-btn .icon { font-size:52px; margin-bottom:8px; filter:grayscale(1) opacity(.3); }
+  .star-btn.unlocked .icon { filter:none; animation:pulse 2.2s ease-in-out infinite; }
+  .star-btn .label { font-size:16px; font-weight:700; color:rgba(255,255,255,.28); }
+  .star-btn.unlocked .label { color:#FFD166; }
+
+  /* detail */
+  .detail-inner { max-width:660px; margin:0 auto; padding:26px 20px; }
+  .detail-header { display:flex; align-items:center; gap:12px; margin-bottom:28px; }
+  .btn-back { background:rgba(255,255,255,.09); border:none; color:#fff; border-radius:12px; padding:9px 18px; cursor:pointer; font-size:14px; font-family:inherit; backdrop-filter:blur(8px); transition:background .2s; }
+  .btn-back:hover { background:rgba(255,255,255,.16); }
+  .scene-counter { font-size:13px; color:var(--text-dim); margin-left:auto; }
+  .branch-hero { text-align:center; margin-bottom:34px; animation:fadeIn .6s ease; }
+  .branch-hero .emoji { font-size:60px; margin-bottom:10px; display:block; }
+  .branch-hero h1 { font-size:30px; font-weight:900; }
+  .branch-hero p { font-size:14px; color:var(--text-dim); margin-top:10px; line-height:1.7; max-width:460px; margin-inline:auto; }
+
+  .scene-card { background:var(--glass); border-radius:22px; padding:30px; border:1px solid var(--glass-border); backdrop-filter:blur(10px); animation:slideUp .5s ease; }
+  .scene-card h2 { font-size:21px; font-weight:700; margin-bottom:16px; }
+  .scene-card .text { font-size:15px; line-height:1.85; color:rgba(255,255,255,.88); margin-bottom:24px; }
+
+  .choices { display:flex; flex-direction:column; gap:10px; }
+  .choice-btn { padding:15px 22px; border-radius:14px; border:1px solid rgba(255,255,255,.12); background:rgba(255,255,255,.06); color:var(--text); font-size:15px; cursor:pointer; text-align:left; transition:all .25s; font-family:inherit; }
+  .choice-btn:hover { background:rgba(255,255,255,.13); transform:translateX(7px); }
+
+  .btn-primary { background:linear-gradient(135deg,#2A9D8F,#457B9D); border:none; color:#fff; padding:15px 30px; border-radius:14px; font-size:16px; font-weight:700; cursor:pointer; transition:all .3s; font-family:inherit; display:inline-block; }
+  .btn-primary:hover { transform:translateY(-2px); box-shadow:0 8px 28px rgba(42,157,143,.4); }
+  .done-badge-scene { text-align:center; padding:18px; background:rgba(42,157,143,.13); border-radius:14px; margin-top:18px; color:#2A9D8F; font-weight:700; font-size:15px; }
+
+  .video-placeholder { background:rgba(0,0,0,.28); border-radius:18px; padding:44px; text-align:center; margin-bottom:22px; border:1px dashed rgba(255,255,255,.18); }
+  .video-placeholder .icon { font-size:50px; margin-bottom:8px; }
+  .video-placeholder p { color:var(--text-dim); font-size:13px; }
+
+  .mini-game { text-align:center; padding:20px 0; }
+  .mini-game .hint { font-size:13px; color:var(--text-dim); margin-bottom:14px; }
+  .game-btns { display:flex; gap:12px; justify-content:center; flex-wrap:wrap; }
+  .game-btn { width:68px; height:68px; font-size:26px; border-radius:16px; border:none; cursor:pointer; transition:all .2s; background:rgba(255,255,255,.08); color:var(--text); font-family:inherit; }
+  .memory-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:11px; max-width:290px; margin:0 auto; }
+  .mem-card { aspect-ratio:1; font-size:28px; border-radius:13px; border:none; cursor:pointer; transition:all .3s; background:rgba(255,255,255,.07); font-family:inherit; color:var(--text); }
+  .mem-card.matched { background:rgba(42,157,143,.25); }
+
+  /* final */
+  #final { background:radial-gradient(ellipse at center,#1a1a3e 0%,var(--bg-deep) 70%); }
+  #final.active { display:flex; align-items:center; justify-content:center; }
+  .final-inner { max-width:580px; padding:36px 24px; text-align:center; animation:fadeIn 1s ease; }
+  .final-inner h1 { font-size:34px; font-weight:900; margin:12px 0 8px; background:linear-gradient(135deg,#FFD166,#FF6B35,#E63946,#9B5DE5); -webkit-background-clip:text; -webkit-text-fill-color:transparent; }
+  .final-inner .subtitle { font-size:16px; color:var(--text-dim); line-height:1.8; margin-bottom:34px; }
+  .reflection-box { background:var(--glass); border-radius:22px; padding:26px; border:1px solid var(--glass-border); text-align:left; }
+  .reflection-box h3 { font-size:19px; font-weight:700; margin-bottom:14px; }
+  .reflection-box textarea { width:100%; min-height:120px; background:rgba(0,0,0,.3); border:1px solid rgba(255,255,255,.14); border-radius:14px; padding:16px; color:var(--text); font-size:15px; resize:vertical; font-family:inherit; line-height:1.65; }
+  .reflection-box textarea::placeholder { color:rgba(255,255,255,.3); }
+  .submitted-msg { padding:22px; background:rgba(42,157,143,.14); border-radius:14px; color:#2A9D8F; font-weight:600; font-size:15px; }
+  .btn-ghost { background:transparent; border:1px solid rgba(255,255,255,.18); color:#fff; border-radius:12px; padding:10px 26px; cursor:pointer; margin-top:26px; font-size:14px; font-family:inherit; transition:all .2s; }
+  .btn-ghost:hover { background:rgba(255,255,255,.08); }
+</style>
+</head>
+<body>
+
+<!-- HUB -->
+<div id="hub" class="screen active">
+  <div class="hub-inner">
+    <div class="hub-title">
+      <h1>🏕️ 營隊成果發表</h1>
+      <p>完成所有分支，解鎖最終回顧 ✦ <span id="doneCount">0</span>/6 已完成</p>
+      <div class="progress-track"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
+    </div>
+    <div class="branch-grid" id="branchGrid"></div>
+    <div class="center-star">
+      <div class="star-btn" id="starBtn" onclick="tryOpenFinal()">
+        <span class="icon">🌟</span>
+        <span class="label" id="starLabel">🔒 完成所有分支即可解鎖（0/6）</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- DETAIL -->
+<div id="detail" class="screen">
+  <div class="detail-inner">
+    <div class="detail-header">
+      <button class="btn-back" onclick="safeGoHub()">← 返回地圖</button>
+      <span class="scene-counter" id="sceneCounter"></span>
+    </div>
+    <div class="branch-hero" id="branchHero"></div>
+    <div class="scene-card" id="sceneCard"></div>
+  </div>
+</div>
+
+<!-- FINAL -->
+<div id="final" class="screen">
+  <div class="final-inner">
+    <div style="font-size:68px">🌟</div>
+    <h1>全部完成！</h1>
+    <p class="subtitle">恭喜你完成了所有的營隊旅程！<br>從早操的活力開始，到結業式的感動告別，每一刻都是珍貴的回憶。</p>
+    <div class="video-placeholder"><div class="icon">🎬</div><p>回顧影片（上傳後顯示於此）</p></div>
+    <div class="reflection-box" id="reflectionBox">
+      <h3>✍️ 寫下你的心得</h3>
+      <div id="reflectionForm">
+        <textarea id="reflectionText" placeholder="這段營隊時光，讓我最印象深刻的是..."></textarea>
+        <button class="btn-primary" style="margin-top:14px;width:100%" onclick="submitReflection()">送出心得 🚀</button>
+      </div>
+    </div>
+    <button class="btn-ghost" onclick="safeGoHub()">← 返回地圖</button>
+  </div>
+</div>
+
+<script>
+/* ═══════════ DATA ═══════════ */
+var BRANCHES = [
+  { id:"morning", name:"早操", emoji:"🌅", color:"#FF6B35",
+    desc:"早操是和小朋友們互動的第一步，讓我們用熱情的音樂和舞蹈帶著大家跳起來！",
+    scenes:[
+      { title:"🎵 熱身音樂響起", text:"清晨的陽光灑落操場，音樂聲響起，小朋友們睡眼惺忪地集合了。身為帶操的大哥哥大姐姐，你準備好了嗎？",
+        choices:[{label:"🔥 用超嗨的音樂叫醒大家",next:1},{label:"😊 先和小朋友們打招呼暖場",next:1}]},
+      { title:"💃 帶動跳教學", text:"小朋友們的眼睛亮了起來！現在要教他們今天的舞步，你想先從哪個動作開始？",
+        choices:[{label:"👋 簡單的拍手動作",next:2},{label:"🦵 跺腳+拍手組合",next:2},{label:"🙌 全身扭動暖身操",next:2}]},
+      { title:"🎉 大家一起跳！", text:"太棒了！小朋友們跟著你的節奏動了起來，整個操場充滿了歡笑和活力！早操圓滿成功！",
+        choices:[], isEnd:true }
+    ]},
+  { id:"chinese", name:"國文課", emoji:"📖", color:"#E63946",
+    desc:"讓我們用有趣的課程帶領小朋友們學習國文！",
+    scenes:[
+      { title:"📚 課堂開始", text:"小朋友們坐好了，今天的國文課要教什麼呢？",
+        choices:[{label:"🧩 成語教學",next:1},{label:"🎭 表演活動",next:2}]},
+      { title:"🧩 成語大挑戰", text:"「守株待兔」——農夫守著樹樁等兔子撞上來。這個成語告訴我們什麼道理呢？",
+        choices:[{label:"不要心存僥倖",next:3},{label:"要主動努力",next:3},{label:"以上皆是！",next:3}]},
+      { title:"🎭 表演時間", text:"小朋友們分組演出成語故事，有人演農夫，有人演兔子，笑聲不斷！",
+        choices:[{label:"繼續看表演 👀",next:3}]},
+      { title:"🎲 國文大富翁", text:"最後用大富翁遊戲複習今天學的內容！骰子一擲，答對問題就能前進。小朋友們玩得超開心！",
+        choices:[], isEnd:true }
+    ]},
+  { id:"english", name:"英文課", emoji:"🌍", color:"#457B9D",
+    desc:"和小朋友們一起解除天氣機器的封印，一起學習英文吧！",
+    scenes:[
+      { title:"⛈️ 天氣機器壞了！", text:"不好了！天氣控制機器被施了封印，需要學會英文咒語才能解除！你準備好和小朋友們一起冒險了嗎？",
+        choices:[{label:"🗡️ 出發冒險！",next:1}]},
+      { title:"📝 單字學習", text:"第一道封印需要天氣單字！Sunny ☀️、Rainy 🌧️、Cloudy ☁️、Windy 🌬️ ——快記住它們！",
+        choices:[{label:"☀️ Sunny",next:2},{label:"🌧️ Rainy",next:2},{label:"全部學會了！",next:2}]},
+      { title:"💬 句子組合", text:"「How's the weather today?」「It's sunny!」太好了，第二道封印裂開了！",
+        choices:[{label:"繼續解除封印！",next:3}]},
+      { title:"🎵 節奏遊戲", text:"最後一道封印！跟著節奏唸出英文句子。Ready? Go!",
+        choices:[], miniGame:"rhythm" }
+    ]},
+  { id:"bingo", name:"賓果", emoji:"🎯", color:"#2A9D8F",
+    desc:"歡迎來到賓果闖關！我們一起籌備了許久的小賓果關卡，不知道小朋友們會不會喜歡呢？",
+    scenes:[
+      { title:"🪑 事前準備", text:"賓果活動即將開始！你需要先做些準備工作。先從哪個開始？",
+        choices:[{label:"1️⃣ 選擇桌號",next:1},{label:"2️⃣ 擺上道具",next:1},{label:"3️⃣ 遊戲說明",next:1}]},
+      { title:"🧠 記憶挑戰", text:"遊戲開始！小朋友需要記住卡片上的圖案位置，翻開配對相同的卡片！",
+        choices:[], miniGame:"memory" }
+    ]},
+  { id:"outdoor", name:"大地遊戲", emoji:"🏃", color:"#E9C46A",
+    desc:"與小賓果不同，大地遊戲是需要團隊精神的團體遊戲，讓我們一起來看看吧！",
+    scenes:[
+      { title:"🌳 大地遊戲時間", text:"整個營區都是我們的遊戲場！大地遊戲考驗的是團隊合作、溝通和默契。來看看這次的精彩活動吧！",
+        choices:[], isEnd:true, hasVideo:true }
+    ]},
+  { id:"ceremony", name:"結業表演", emoji:"🎭", color:"#9B5DE5",
+    desc:"經過這段時間的相處，和小朋友們也有了一定的熟悉，但終究要迎來分別，就用精心準備的表演來做最後的告別吧。",
+    scenes:[
+      { title:"🎪 選擇表演項目", text:"結業典禮到了！你要為小朋友們準備什麼表演呢？",
+        choices:[{label:"💃 舞蹈",next:1},{label:"🎤 唱歌",next:2},{label:"🥤 杯子節奏",next:3}]},
+      { title:"💃 舞蹈表演", text:"音樂響起！按照正確的順序完成舞步吧！",
+        choices:[], miniGame:"dance" },
+      { title:"🎤 唱歌表演", text:"限時拼完歌詞！歌聲是最好的告別禮物。",
+        choices:[], miniGame:"lyrics" },
+      { title:"🥤 杯子節奏", text:"跟著節奏敲擊杯子！Cup Song 挑戰開始！",
+        choices:[], miniGame:"cups" },
+      { title:"🌅 結業送別", text:"快樂的時光總是短暫，讓我們一起把孩子們送出去吧。謝謝你們，這段時光因為有你們而特別。",
+        choices:[], isEnd:true, hasVideo:true }
+    ]}
+];
+
+/* ═══════════ STATE ═══════════ */
+var completed    = {};
+var currentBranch = null;
+var currentScene  = 0;
+
+/* ★ 集中管理計時器 */
+var activeTimers = [];
+function addTimer(id) { activeTimers.push(id); }
+function clearAllTimers() {
+  for (var i = 0; i < activeTimers.length; i++) clearTimeout(activeTimers[i]);
+  activeTimers = [];
+  window._rhythmHit  = null;
+  window._genericHit  = null;
+  window._danceHit    = null;
+  window._memFlip     = null;
+}
+
+/* ═══════════ NAV ═══════════ */
+function showScreen(id) {
+  var screens = document.querySelectorAll('.screen');
+  for (var i = 0; i < screens.length; i++) screens[i].classList.remove('active');
+  document.getElementById(id).classList.add('active');
+  window.scrollTo(0,0);
+}
+
+function safeGoHub() {
+  clearAllTimers();
+  currentBranch = null;
+  currentScene = 0;
+  renderHub();
+  showScreen('hub');
+}
+
+function openBranch(id) {
+  clearAllTimers();
+  for (var i = 0; i < BRANCHES.length; i++) {
+    if (BRANCHES[i].id === id) { currentBranch = BRANCHES[i]; break; }
+  }
+  currentScene = 0;
+  showScreen('detail');
+  renderDetail();
+}
+
+function tryOpenFinal() {
+  if (Object.keys(completed).length === 6) {
+    showScreen('final');
+    document.getElementById('reflectionForm').style.display = 'block';
+    document.getElementById('reflectionText').value = '';
+    var prev = document.getElementById('submittedMsg');
+    if (prev) prev.remove();
+  }
+}
+
+/* ═══════════ RENDER HUB ═══════════ */
+function renderHub() {
+  var doneN = Object.keys(completed).length;
+  document.getElementById('doneCount').textContent = doneN;
+  document.getElementById('progressFill').style.width = (doneN/6*100)+'%';
+
+  var grid = document.getElementById('branchGrid');
+  grid.innerHTML = '';
+  for (var i = 0; i < BRANCHES.length; i++) {
+    (function(b, idx){
+      var isDone = !!completed[b.id];
+      var card = document.createElement('div');
+      card.className = 'branch-card';
+      card.style.animationDelay = (idx * .1) + 's';
+      if (isDone) {
+        card.style.borderColor = b.color;
+        card.style.background = 'linear-gradient(135deg,' + b.color + '28,' + b.color + '0a)';
+      }
+      card.onclick = function(){ openBranch(b.id); };
+      card.innerHTML =
+        (isDone ? '<div class="badge-done">✅ 完成</div>' : '') +
+        '<span class="emoji">' + b.emoji + '</span>' +
+        '<h3 style="color:' + b.color + '">' + b.name + '</h3>' +
+        '<p class="desc">' + b.desc + '</p>' +
+        '<div class="enter" style="color:' + b.color + '">點擊進入 →</div>';
+      grid.appendChild(card);
+    })(BRANCHES[i], i);
+  }
+
+  var allDone = (doneN === 6);
+  var star = document.getElementById('starBtn');
+  star.className = 'star-btn' + (allDone ? ' unlocked' : '');
+  document.getElementById('starLabel').textContent = allDone
+    ? '✨ 點擊查看最終回顧 ✨'
+    : '🔒 完成所有分支即可解鎖（' + doneN + '/6）';
+}
+
+/* ═══════════ RENDER DETAIL ═══════════ */
+function renderDetail() {
+  var b = currentBranch;
+  if (!b) return;
+  var s = b.scenes[currentScene];
+  var isDone = !!completed[b.id];
+
+  document.getElementById('detail').style.background =
+    'linear-gradient(135deg,' + b.color + '18 0%,#0a0a1a 50%,' + b.color + '0c 100%)';
+  document.getElementById('sceneCounter').textContent = (currentScene+1) + ' / ' + b.scenes.length;
+  document.getElementById('branchHero').innerHTML =
+    '<span class="emoji">' + b.emoji + '</span>' +
+    '<h1 style="color:' + b.color + '">' + b.name + '</h1>' +
+    '<p>' + b.desc + '</p>';
+
+  var card = document.getElementById('sceneCard');
+  card.style.borderColor = b.color + '33';
+  var html = '<h2 style="color:' + b.color + '">' + s.title + '</h2>' +
+             '<p class="text">' + s.text + '</p>';
+
+  if (s.hasVideo) {
+    html += '<div class="video-placeholder"><div class="icon">🎬</div><p>影片區域（上傳後顯示於此）</p></div>';
+  }
+  if (s.miniGame) {
+    html += '<div id="miniGameArea" class="mini-game"></div>';
+  }
+  if (!s.miniGame && s.choices && s.choices.length > 0) {
+    html += '<div class="choices">';
+    for (var i = 0; i < s.choices.length; i++) {
+      html += '<button class="choice-btn" onclick="safeGoScene(' + s.choices[i].next + ')">' + s.choices[i].label + '</button>';
+    }
+    html += '</div>';
+  }
+
+  /* ★ 只有明確標記 isEnd 且沒有 miniGame 且沒選項時，顯示完成按鈕 */
+  if (s.isEnd === true && !s.miniGame && (!s.choices || s.choices.length === 0)) {
+    if (!isDone) {
+      html += '<button class="btn-primary" style="margin-top:18px;background:' + b.color + '" onclick="completeCurrent()">✅ 標記完成</button>';
+    }
+  }
+  if (isDone) {
+    html += '<div class="done-badge-scene">✅ 此分支已完成！</div>';
+  }
+
+  card.innerHTML = html;
+
+  if (s.miniGame) {
+    setTimeout(function(){ initMiniGame(s.miniGame); }, 60);
+  }
+}
+
+function safeGoScene(idx) {
+  clearAllTimers();
+  currentScene = idx;
+  renderDetail();
+}
+
+function completeCurrent() {
+  if (!currentBranch) return;
+  completed[currentBranch.id] = true;
+  renderDetail();
+}
+
+/* ═══════════════════════════════════
+   ★ MINI GAME 完成後的統一入口
+   不直接標記完成——而是導向分支的最後一個 isEnd 場景
+   ═══════════════════════════════════ */
+function miniGameFinished() {
+  if (!currentBranch) return;
+  var b = currentBranch;
+  var s = b.scenes[currentScene];
+
+  // 找分支裡最後一個 isEnd 場景
+  var endIdx = -1;
+  for (var i = b.scenes.length - 1; i >= 0; i--) {
+    if (b.scenes[i].isEnd === true) { endIdx = i; break; }
+  }
+
+  // 如果目前場景本身就是 isEnd，或找不到別的 isEnd → 直接完成
+  if (s.isEnd === true || endIdx <= currentScene) {
+    completed[b.id] = true;
+    clearAllTimers();
+    renderDetail();
+    return;
+  }
+
+  // 否則跳到那個 isEnd 場景（例如結業送別）
+  clearAllTimers();
+  currentScene = endIdx;
+  renderDetail();
+}
+
+/* ═══════════ INIT MINI GAME ═══════════ */
+function initMiniGame(type) {
+  var area = document.getElementById('miniGameArea');
+  if (!area) return;
+  clearAllTimers();
+  if (type === 'rhythm')  initRhythm(area);
+  else if (type === 'memory')  initMemory(area);
+  else if (type === 'dance')   initDance(area);
+  else initGeneric(area, type);
+}
+
+/* ── Rhythm ── */
+function initRhythm(area) {
+  var hits = 0, total = 8, active = -1;
+  var labels = ["☀️","🌧️","☁️","🌬️"];
+
+  function render() {
+    if (hits >= total) {
+      area.innerHTML = '<p style="font-size:24px;margin-bottom:12px">🎉 封印完全解除！</p>' +
+        '<p style="margin-bottom:16px">天氣機器恢復正常運作了！小朋友們歡呼雀躍！</p>' +
+        '<button class="btn-primary" onclick="miniGameFinished()">完成 ✓</button>';
+      return;
+    }
+    var btns = '';
+    for (var i = 0; i < labels.length; i++) {
+      var lit = (i === active);
+      btns += '<button class="game-btn" style="background:' + (lit?'#FFD166':'rgba(255,255,255,.08)') +
+        ';' + (lit?'box-shadow:0 0 20px #FFD166;transform:scale(1.15)':'') +
+        '" onclick="if(window._rhythmHit)window._rhythmHit(' + i + ')">' + labels[i] + '</button>';
+    }
+    area.innerHTML = '<p class="hint">跟著亮起的按鈕點擊！ (' + hits + '/' + total + ')</p><div class="game-btns">' + btns + '</div>';
+  }
+
+  function lightNext() {
+    active = Math.floor(Math.random() * 4);
+    render();
+    addTimer(setTimeout(function(){
+      active = -1; render();
+      addTimer(setTimeout(lightNext, 400));
+    }, 1800));
+  }
+
+  window._rhythmHit = function(i) {
+    if (i !== active) return;
+    hits++; clearAllTimers();
+    // re-register callback since clearAllTimers nulls it
+    window._rhythmHit = arguments.callee;
+    active = -1; render();
+    if (hits < total) addTimer(setTimeout(lightNext, 500));
+  };
+
+  render();
+  addTimer(setTimeout(lightNext, 600));
+}
+
+/* ── Memory ── */
+function initMemory(area) {
+  var icons = ["🌸","🌟","🎈","🍎","🌸","🌟","🎈","🍎"];
+  var cards = icons.sort(function(){ return Math.random()-0.5; });
+  var flipped = [], matched = [], busy = false;
+
+  function render() {
+    if (matched.length === cards.length) {
+      area.innerHTML = '<p style="font-size:24px;margin-bottom:12px">🎉 全部配對成功！</p>' +
+        '<p style="margin-bottom:16px">小朋友們的記憶力好棒！賓果活動圓滿成功！</p>' +
+        '<button class="btn-primary" onclick="miniGameFinished()">完成 ✓</button>';
+      return;
+    }
+    var html = '<p class="hint">翻開配對相同的卡片！</p><div class="memory-grid">';
+    for (var i = 0; i < cards.length; i++) {
+      var show = flipped.indexOf(i) !== -1 || matched.indexOf(i) !== -1;
+      var m = matched.indexOf(i) !== -1;
+      html += '<button class="mem-card' + (m?' matched':'') + '" style="' + (show?'background:rgba(255,255,255,.15)':'') +
+        '" onclick="if(window._memFlip)window._memFlip(' + i + ')">' + (show ? cards[i] : '❓') + '</button>';
+    }
+    html += '</div>';
+    area.innerHTML = html;
+  }
+
+  window._memFlip = function(i) {
+    if (busy || flipped.indexOf(i) !== -1 || matched.indexOf(i) !== -1) return;
+    flipped.push(i);
+    render();
+    if (flipped.length === 2) {
+      busy = true;
+      var a = flipped[0], b2 = flipped[1];
+      addTimer(setTimeout(function() {
+        if (cards[a] === cards[b2]) matched.push(a, b2);
+        flipped = []; busy = false; render();
+      }, 700));
+    }
+  };
+
+  render();
+}
+
+/* ── Dance ── */
+function initDance(area) {
+  var seq = ["👆","👇","👈","👉","🙌","👏"];
+  var step = 0;
+  var pool = ["👆","👇","👈","👉","🙌","👏"];
+
+  function render() {
+    if (step >= seq.length) {
+      area.innerHTML = '<p style="font-size:24px;margin-bottom:12px">💃 舞蹈完美完成！</p>' +
+        '<button class="btn-primary" onclick="miniGameFinished()">完成 ✓</button>';
+      return;
+    }
+    var display = pool.slice().sort(function(){ return Math.random()-0.3; });
+    var btns = '';
+    for (var i = 0; i < display.length; i++) {
+      btns += '<button class="game-btn" onclick="if(window._danceHit)window._danceHit(\'' + display[i] + '\')">' + display[i] + '</button>';
+    }
+    area.innerHTML = '<p class="hint">按照順序點擊正確的動作！ (' + (step+1) + '/' + seq.length + ')</p>' +
+      '<p style="font-size:42px;margin-bottom:16px">下一步：' + seq[step] + '</p><div class="game-btns">' + btns + '</div>';
+  }
+
+  window._danceHit = function(e) { if (e === seq[step]) { step++; render(); } };
+  render();
+}
+
+/* ── Generic (lyrics / cups) ── */
+function initGeneric(area, type) {
+  var progress = 0, total = 6, active = -1;
+  var btnLabels = type === 'lyrics' ? ["詞","曲","歌","唱"] : ["拍","敲","叩","擊"];
+  var doneMsg = type === 'lyrics'
+    ? "🎤 歌詞拼湊完成！感動的歌聲迴盪在會場！"
+    : "🥤 杯子節奏大成功！完美的節奏感！";
+
+  function render() {
+    if (progress >= total) {
+      area.innerHTML = '<p style="font-size:22px;margin-bottom:14px">' + doneMsg + '</p>' +
+        '<button class="btn-primary" onclick="miniGameFinished()">完成 ✓</button>';
+      return;
+    }
+    var btns = '';
+    for (var i = 0; i < btnLabels.length; i++) {
+      var lit = (i === active);
+      btns += '<button class="game-btn" style="font-size:22px;font-weight:700;background:' + (lit?'#E9C46A':'rgba(255,255,255,.08)') +
+        ';' + (lit?'box-shadow:0 0 18px rgba(233,196,106,.5);transform:scale(1.15)':'') +
+        '" onclick="if(window._genericHit)window._genericHit(' + i + ')">' + btnLabels[i] + '</button>';
+    }
+    area.innerHTML = '<p class="hint">' + (type==='lyrics'?'快速點擊亮起的按鈕拼出歌詞！':'跟著節奏敲擊！') + ' (' + progress + '/' + total + ')</p>' +
+      '<div class="game-btns">' + btns + '</div>';
+  }
+
+  function lightNext() {
+    active = Math.floor(Math.random() * 4);
+    render();
+    addTimer(setTimeout(function(){
+      active = -1; render();
+      addTimer(setTimeout(lightNext, 350));
+    }, 1600));
+  }
+
+  window._genericHit = function(i) {
+    if (i !== active) return;
+    progress++; clearAllTimers();
+    window._genericHit = arguments.callee;
+    active = -1; render();
+    if (progress < total) addTimer(setTimeout(lightNext, 400));
+  };
+
+  render();
+  addTimer(setTimeout(lightNext, 500));
+}
+
+/* ═══════════ FINAL ═══════════ */
+function submitReflection() {
+  var text = document.getElementById('reflectionText').value.trim();
+  if (!text) return;
+  document.getElementById('reflectionForm').style.display = 'none';
+  var msg = document.createElement('div');
+  msg.id = 'submittedMsg';
+  msg.className = 'submitted-msg';
+  msg.textContent = '🎉 感謝你的分享！營隊旅程圓滿結束！';
+  document.getElementById('reflectionBox').appendChild(msg);
+}
+
+/* ═══════════ INIT ═══════════ */
+renderHub();
+var hubEl = document.getElementById('hub');
+for (var i = 0; i < 14; i++) {
+  var p = document.createElement('div');
+  p.className = 'particle';
+  p.style.top = Math.random()*100 + '%';
+  p.style.left = Math.random()*100 + '%';
+  p.style.animationDuration = (3 + Math.random()*4) + 's';
+  p.style.animationDelay = (Math.random()*3) + 's';
+  p.style.opacity = .03 + Math.random()*.06;
+  hubEl.appendChild(p);
+}
+</script>
+</body>
+</html>
