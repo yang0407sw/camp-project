@@ -379,27 +379,81 @@ body{font-family:'Noto Sans TC',sans-serif;background:var(--bg);color:var(--dark
 
 <!-- ── 早操 ── -->
 <div id="branch-morning" class="screen branch-page">
+
+  <style>
+    .game-tip{
+        text-align:center;
+        margin-bottom:20px;
+    }
+
+    .tip-title{
+        font-size:18px;
+        font-weight:700;
+        color:#E8659A;
+        margin-bottom:12px;
+    }
+
+    .tip-line{
+        border:none;
+        border-top:2px solid #FFD1E1;
+        width:90%;
+        margin:auto;
+    }
+  </style>
+
   <div class="branch-header" style="width:100%;max-width:720px;">
     <div>
-      <div class="branch-title" style="color:#E8659A">🌅 早操</div>
-      <div class="branch-subtitle">跟著姐姐們一起跳早操吧！</div>
+
+      <div class="branch-title" style="color:#E8659A">
+        🌅 早操
+      </div>
+
+      <div class="branch-subtitle">
+        跟著姐姐們一起跳早操吧！
+      </div>
+
     </div>
   </div>
+
   <div class="content-box">
+
+    <!-- 遊戲提示 -->
+    <div class="game-tip">
+
+      <div class="tip-title">
+        🎯 請點選和上方提示燈一樣的圖案
+      </div>
+
+      <hr class="tip-line">
+
+    </div>
+
+    <!-- 按鈕 -->
     <div class="two-btns">
+
       <button class="act-btn" id="btn-hand" onclick="startHandGame(false)">
         <span class="act-emoji">👐</span>
         <span>手部動作</span>
-        <span class="done-check" id="check-hand" style="display:none">✅</span>
+        <span class="done-check" id="check-hand" style="display:none">
+          ✅
+        </span>
       </button>
-      <button class="act-btn" id="btn-handleg" onclick="startHandGame(true)" id="btn-handleg">
+
+      <button class="act-btn" id="btn-handleg" onclick="startHandGame(true)">
         <span class="act-emoji">🕺</span>
         <span>手部＋腿部動作</span>
-        <span class="done-check" id="check-handleg" style="display:none">✅</span>
+        <span class="done-check" id="check-handleg" style="display:none">
+          ✅
+        </span>
       </button>
+
     </div>
+
+    <!-- 遊戲區 -->
     <div class="game-area" id="morning-game"></div>
+
   </div>
+
 </div>
 
 <!-- ── 國文課 ── -->
