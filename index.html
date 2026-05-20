@@ -640,28 +640,352 @@ function checkMorningAnswer(btn, choice, answer){
 </script>
 <!-- ── 國文課 ── -->
 <div id="branch-chinese" class="screen branch-page">
+
   <div class="branch-header" style="width:100%;max-width:720px;">
+
     <div>
-      <div class="branch-title" style="color:#F4A261">📖 國文課</div>
+
+      <div class="branch-title" style="color:#F4A261">
+        📖 國文課
+      </div>
+
+      <div class="branch-subtitle">
+        挑戰成語與語文知識吧！
+      </div>
+
     </div>
+
   </div>
+
   <div class="content-box">
-    <div class="two-btns">
-      <button class="act-btn" id="btn-idiom" onclick="startIdiom()">
-        <span class="act-emoji">🧩</span>
-        <span>成語大挑戰</span>
-        <span class="done-check" id="check-idiom" style="display:none">✅</span>
-      </button>
-      <button class="act-btn" id="btn-monopoly" onclick="startMonopoly()">
-        <span class="act-emoji">🎲</span>
-        <span>成語大富翁</span>
-        <span class="done-check" id="check-monopoly" style="display:none">✅</span>
-      </button>
+
+    <!-- 遊戲說明 -->
+    <div class="game-intro">
+
+      <div class="intro-title">
+        📌 遊戲說明
+      </div>
+
+      <div class="intro-text">
+        選出正確答案。<br>
+        答對亮綠燈，答錯亮紅燈。<br>
+        答錯需要重新作答！
+      </div>
+
     </div>
+
+    <!-- 分隔線 -->
+    <hr class="game-line">
+
+    <!-- 主按鈕 -->
+    <div class="two-btns">
+
+      <button class="act-btn" id="btn-idiom" onclick="startIdiom()">
+
+        <span class="act-emoji">🧩</span>
+
+        <span class="btn-text">
+          成語大挑戰
+        </span>
+
+        <span class="done-check" id="check-idiom" style="display:none">
+          ✅
+        </span>
+
+      </button>
+
+      <button class="act-btn" id="btn-monopoly" onclick="startMonopoly()">
+
+        <span class="act-emoji">🎲</span>
+
+        <span class="btn-text">
+          成語大富翁
+        </span>
+
+        <span class="done-check" id="check-monopoly" style="display:none">
+          ✅
+        </span>
+
+      </button>
+
+    </div>
+
+    <!-- 遊戲區 -->
     <div class="game-area" id="chinese-game"></div>
+
+    <!-- 影片區 -->
+    <div class="video-area">
+
+      <div class="video-title">
+        🎬 活動影片
+      </div>
+
+      <iframe
+        width="100%"
+        height="315"
+        src="https://www.youtube.com/embed/dQw4w9WgXcQ"
+        title="活動影片"
+        frameborder="0"
+        allowfullscreen>
+      </iframe>
+
+    </div>
+
   </div>
+
 </div>
 
+<style>
+
+/* 主按鈕避免爆字 */
+.act-btn{
+    width:220px;
+    min-height:120px;
+    padding:15px;
+    border:none;
+    border-radius:20px;
+    background:#FFF7F0;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    gap:8px;
+    box-shadow:0 4px 10px rgba(0,0,0,.12);
+}
+
+.btn-text{
+    font-size:18px;
+    font-weight:700;
+    text-align:center;
+    word-break:break-word;
+}
+
+/* 遊戲說明 */
+.game-intro{
+    background:#FFF7F0;
+    border:3px solid #F4A261;
+    border-radius:20px;
+    padding:18px;
+    margin-bottom:22px;
+    text-align:center;
+}
+
+.intro-title{
+    font-size:20px;
+    font-weight:700;
+    color:#E76F51;
+    margin-bottom:8px;
+}
+
+.intro-text{
+    font-size:15px;
+    line-height:1.7;
+    color:#5C4033;
+}
+
+/* 分隔線 */
+.game-line{
+    border:none;
+    height:3px;
+    background:linear-gradient(to right,#FFD6A5,#F4A261,#FFD6A5);
+    border-radius:999px;
+    margin:25px auto;
+    width:80%;
+}
+
+/* 題目 */
+.question-box{
+    background:#FFF;
+    border-radius:20px;
+    padding:25px;
+    margin-top:25px;
+    text-align:center;
+    box-shadow:0 4px 10px rgba(0,0,0,.1);
+}
+
+.question-title{
+    font-size:22px;
+    font-weight:700;
+    margin-bottom:25px;
+    color:#5C4033;
+}
+
+/* 選項 */
+.answer-buttons{
+    display:flex;
+    flex-direction:column;
+    gap:15px;
+}
+
+.answer-btn{
+    padding:15px;
+    border:none;
+    border-radius:15px;
+    background:#FFF7F0;
+    font-size:17px;
+    cursor:pointer;
+    transition:.2s;
+}
+
+.answer-btn:hover{
+    transform:scale(1.02);
+}
+
+/* 影片區 */
+.video-area{
+    margin-top:40px;
+    text-align:center;
+}
+
+.video-title{
+    font-size:20px;
+    font-weight:700;
+    color:#E76F51;
+    margin-bottom:12px;
+}
+
+.video-area iframe{
+    border-radius:18px;
+    box-shadow:0 4px 12px rgba(0,0,0,.15);
+}
+
+</style>
+
+<script>
+
+function startIdiom(){
+
+    const gameArea = document.getElementById("chinese-game");
+
+    gameArea.innerHTML = `
+
+      <div class="question-box">
+
+        <div class="question-title">
+          「畫蛇添足」的意思是？
+        </div>
+
+        <div class="answer-buttons">
+
+          <button class="answer-btn"
+            onclick="checkIdiom(this,false)">
+            多此一舉
+          </button>
+
+          <button class="answer-btn"
+            onclick="checkIdiom(this,true)">
+            畫畫很好看
+          </button>
+
+          <button class="answer-btn"
+            onclick="checkIdiom(this,false)">
+            動作很快
+          </button>
+
+        </div>
+
+      </div>
+
+    `;
+}
+
+function checkIdiom(btn,correct){
+
+    if(correct){
+
+        btn.style.background = "#A5D6A7";
+
+        setTimeout(()=>{
+
+            alert("答對了！");
+
+            document.getElementById("check-idiom").style.display="inline";
+
+        },300);
+
+    }else{
+
+        btn.style.background = "#EF9A9A";
+
+        setTimeout(()=>{
+
+            btn.style.background = "#FFF7F0";
+
+            alert("答錯了！再試一次！");
+
+        },400);
+
+        return;
+    }
+}
+
+function startMonopoly(){
+
+    const gameArea = document.getElementById("chinese-game");
+
+    gameArea.innerHTML = `
+
+      <div class="question-box">
+
+        <div class="question-title">
+          「井底之蛙」是在形容？
+        </div>
+
+        <div class="answer-buttons">
+
+          <button class="answer-btn"
+            onclick="checkMonopoly(this,true)">
+            見識短淺
+          </button>
+
+          <button class="answer-btn"
+            onclick="checkMonopoly(this,false)">
+            很會游泳
+          </button>
+
+          <button class="answer-btn"
+            onclick="checkMonopoly(this,false)">
+            喜歡青蛙
+          </button>
+
+        </div>
+
+      </div>
+
+    `;
+}
+
+function checkMonopoly(btn,correct){
+
+    if(correct){
+
+        btn.style.background = "#A5D6A7";
+
+        setTimeout(()=>{
+
+            alert("答對了！");
+
+            document.getElementById("check-monopoly").style.display="inline";
+
+        },300);
+
+    }else{
+
+        btn.style.background = "#EF9A9A";
+
+        setTimeout(()=>{
+
+            btn.style.background = "#FFF7F0";
+
+            alert("答錯了！請重新作答！");
+
+        },400);
+
+        return;
+    }
+}
+
+</script>
 <!-- ── 英文課 ── -->
 <div id="branch-english" class="screen branch-page">
   <div class="branch-header" style="width:100%;max-width:720px;">
