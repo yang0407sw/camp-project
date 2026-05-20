@@ -381,12 +381,65 @@ body{font-family:'Noto Sans TC',sans-serif;background:var(--bg);color:var(--dark
 <div id="branch-morning" class="screen branch-page">
 
   <style>
-    .tip-line{
+
+    .game-line{
         border:none;
         border-top:3px solid #FFD1E1;
-        width:100%;
-        margin:20px 0;
+        margin:25px 0;
     }
+
+    .light-area{
+        text-align:center;
+    }
+
+    .light-title{
+        font-size:20px;
+        font-weight:700;
+        color:#E8659A;
+        margin-bottom:12px;
+    }
+
+    .light-box{
+        font-size:50px;
+        background:#FFF0F6;
+        border:3px solid #E8659A;
+        border-radius:20px;
+        width:120px;
+        margin:auto;
+        padding:20px;
+    }
+
+    .player-area{
+        text-align:center;
+    }
+
+    .player-title{
+        font-size:18px;
+        font-weight:700;
+        margin-bottom:16px;
+        color:#C2185B;
+    }
+
+    .choice-buttons{
+        display:flex;
+        justify-content:center;
+        gap:20px;
+    }
+
+    .choice-btn{
+        font-size:40px;
+        padding:18px 28px;
+        border-radius:18px;
+        border:none;
+        cursor:pointer;
+        background:#FFF0F6;
+        transition:0.2s;
+    }
+
+    .choice-btn:hover{
+        transform:scale(1.08);
+    }
+
   </style>
 
   <div class="branch-header" style="width:100%;max-width:720px;">
@@ -405,10 +458,7 @@ body{font-family:'Noto Sans TC',sans-serif;background:var(--bg);color:var(--dark
 
   <div class="content-box">
 
-    <!-- 分隔線 -->
-    <hr class="tip-line">
-
-    <!-- 按鈕 -->
+    <!-- 主選單按鈕 -->
     <div class="two-btns">
 
       <button class="act-btn" id="btn-hand" onclick="startHandGame(false)">
@@ -435,6 +485,81 @@ body{font-family:'Noto Sans TC',sans-serif;background:var(--bg);color:var(--dark
   </div>
 
 </div>
+
+<script>
+
+function startHandGame(isHandLeg){
+
+    const gameArea = document.getElementById("morning-game");
+
+    let targetEmoji = isHandLeg ? "🕺" : "👐";
+
+    gameArea.innerHTML = `
+
+      <!-- 提示燈 -->
+      <div class="light-area">
+
+        <div class="light-title">
+          提示燈
+        </div>
+
+        <div class="light-box">
+          ${targetEmoji}
+        </div>
+
+      </div>
+
+      <!-- 分隔線 -->
+      <hr class="game-line">
+
+      <!-- 玩家選擇 -->
+      <div class="player-area">
+
+        <div class="player-title">
+          🎯 請點選和提示燈一樣的圖案
+        </div>
+
+        <div class="choice-buttons">
+
+          <button class="choice-btn"
+            onclick="checkMorningAnswer(this,'👐','${targetEmoji}')">
+            👐
+          </button>
+
+          <button class="choice-btn"
+            onclick="checkMorningAnswer(this,'🕺','${targetEmoji}')">
+            🕺
+          </button>
+
+        </div>
+
+      </div>
+
+    `;
+}
+
+function checkMorningAnswer(btn, choice, answer){
+
+    if(choice === answer){
+
+        btn.style.background = "#A5D6A7";
+
+        setTimeout(()=>{
+            alert("答對了！");
+        },300);
+
+    }else{
+
+        btn.style.background = "#EF9A9A";
+
+        setTimeout(()=>{
+            btn.style.background = "#FFF0F6";
+        },500);
+
+    }
+}
+
+</script>
 <!-- ── 國文課 ── -->
 <div id="branch-chinese" class="screen branch-page">
   <div class="branch-header" style="width:100%;max-width:720px;">
