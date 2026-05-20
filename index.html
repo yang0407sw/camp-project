@@ -638,125 +638,33 @@ function checkMorningAnswer(btn, choice, answer){
 
 
 </script>
+國文
+
 <!-- ── 國文課 ── -->
-var IDIOMS = [
-  { word:'獨樹一幟', correct:'形容人的思想、學問、藝術創作或某事物的風格與眾不同，創立出獨特的流派或形式。',
-    wrong:['比喻人只顧眼前利益，捨棄根本而追求枝末。','比喻界限分明，是非清楚。'] },
-  { word:'捨本逐末', correct:'比喻只顧眼前利益，捨棄根本而追求枝末。',
-    wrong:['形容人的思想、學問創立出獨特的流派。','比喻界限清楚，是非分明。'] },
-  { word:'涇渭分明', correct:'比喻界限分明，是非清楚，好壞截然不同。',
-    wrong:['比喻放棄根本只顧末節。','形容風格與眾不同，別具一格。'] }
-];
-var _idiomState = {level:0, answered:false};
- 
-function startIdiom() {
-  _idiomState = {level:0, answered:false};
-  renderIdiom();
-}
- 
-function renderIdiom() {
-  var s = _idiomState;
-  if(s.level >= IDIOMS.length) {
-    chineseDone.idiom = true;
-    document.getElementById('check-idiom').style.display='block';
-    document.getElementById('btn-idiom').classList.add('done');
-    document.getElementById('chinese-game').innerHTML='<div class="result-msg">🎉 成語大挑戰完成！</div>';
-    checkChineseDone();
-    return;
-  }
-  var q = IDIOMS[s.level];
-  var opts = [q.correct, q.wrong[0], q.wrong[1]].sort(function(){ return Math.random()-.5; });
-  var html = '<div class="level-indicator">第 '+(s.level+1)+' / '+IDIOMS.length+' 題</div>';
-  html += '<div class="progress-bar-wrap"><div class="progress-bar-fill" style="width:'+(s.level/IDIOMS.length*100)+'%"></div></div>';
-  html += '<div class="game-prompt" style="text-align:center;margin-bottom:18px;">「<b>'+q.word+'</b>」的意思是？</div>';
-  html += '<div class="choices-list">';
-  opts.forEach(function(o){
-    html += '<button class="choice-btn" onclick="answerIdiom(this,\''+escQ(o)+'\',\''+escQ(q.correct)+'\')">'+o+'</button>';
-  });
-  html += '</div>';
-  document.getElementById('chinese-game').innerHTML = html;
-}
- 
-function answerIdiom(btn, chosen, correct) {
-  if(_idiomState.answered) return;
-  _idiomState.answered = true;
-  var btns = document.querySelectorAll('#chinese-game .choice-btn');
-  btns.forEach(function(b){
-    b.onclick=null;
-    if(b.textContent === correct) b.classList.add('correct');
-    else if(b === btn && chosen !== correct) b.classList.add('wrong');
-  });
-  setTimeout(function(){ _idiomState.level++; _idiomState.answered=false; renderIdiom(); }, 1100);
-}
- 
-/* 成語大富翁 */
-var MONOPOLY_QS = [
-  {word:'半途而廢', q:'這個成語形容什麼行為？', opts:['做事做到一半就放棄','比喻任勞任怨','做事有始有終'], ans:'做事做到一半就放棄'},
-  {word:'一石二鳥', q:'這個成語形容什麼？', opts:['費力不討好','一舉兩得的做法','專心致志的態度'], ans:'一舉兩得的做法'},
-  {word:'對牛彈琴', q:'這個成語諷刺什麼？', opts:['對不懂的人講道理','形容技術高超','比喻歌聲優美'], ans:'對不懂的人講道理'},
-  {word:'三人成虎', q:'這個成語說的是？', opts:['人多力量大','謠言重複多次就容易被誤信','團結就是力量'], ans:'謠言重複多次就容易被誤信'},
-  {word:'一箭雙雕', q:'這個成語的意思最接近？', opts:['射箭技術高超','一個行動達到兩個目的','專注於目標'], ans:'一個行動達到兩個目的'},
-  {word:'班門弄斧', q:'這個成語比喻什麼？', opts:['在行家面前賣弄本領','勇於挑戰權威','虛心學習的精神'], ans:'在行家面前賣弄本領'},
-];
-var _monoState = {roll:0, level:0, answered:false};
- 
-function startMonopoly() {
-  _monoState = {roll:0, level:0, answered:false};
-  renderMonopoly();
-}
- 
-function renderMonopoly() {
-  var area = document.getElementById('chinese-game');
-  if(_monoState.level >= 3) {
-    chineseDone.monopoly = true;
-    document.getElementById('check-monopoly').style.display='block';
-    document.getElementById('btn-monopoly').classList.add('done');
-    area.innerHTML = '<div class="result-msg">🎉 成語大富翁完成！</div>';
-    checkChineseDone();
-    return;
-  }
-  if(_monoState.roll === 0) {
-    area.innerHTML = '<p class="game-prompt">擲骰子決定題目！（第'+((_monoState.level+1))+'題）</p>'+
-      '<button class="primary-btn" onclick="rollDice()">🎲 擲骰子</button>';
-  }
-}
- 
-function rollDice() {
-  var n = Math.floor(Math.random()*6)+1;
-  _monoState.roll = n;
-  var idx = (n-1) % MONOPOLY_QS.length;
-  var q = MONOPOLY_QS[idx];
-  var opts = q.opts.slice().sort(function(){ return Math.random()-.5; });
-  var area = document.getElementById('chinese-game');
-  var html = '<p class="game-prompt">🎲 骰到了 <b>'+n+'</b>！</p>';
-  html += '<p style="text-align:center;margin-bottom:14px;font-size:16px;">「<b>'+q.word+'</b>」—— '+q.q+'</p>';
-  html += '<div class="choices-list">';
-  opts.forEach(function(o){
-    html += '<button class="choice-btn" onclick="answerMono(this,\''+escQ(o)+'\',\''+escQ(q.ans)+'\')">'+o+'</button>';
-  });
-  html += '</div>';
-  area.innerHTML = html;
-}
- 
-function answerMono(btn, chosen, correct) {
-  if(_monoState.answered) return;
-  _monoState.answered = true;
-  document.querySelectorAll('#chinese-game .choice-btn').forEach(function(b){
-    b.onclick=null;
-    if(b.textContent === correct) b.classList.add('correct');
-    else if(b===btn && chosen!==correct) b.classList.add('wrong');
-  });
-  setTimeout(function(){
-    _monoState.level++; _monoState.roll=0; _monoState.answered=false;
-    renderMonopoly();
-  }, 1100);
-}
- 
-function checkChineseDone() {
-  if(chineseDone.idiom && chineseDone.monopoly) {
-    setTimeout(function(){ goTo('branch-english', null); }, 1400);
-  }
-}
+<div id="branch-chinese" class="screen branch-page">
+  <div class="branch-header" style="width:100%;max-width:720px;">
+    <div>
+      <div class="branch-title" style="color:#F4A261">📖 國文課</div>
+    </div>
+  </div>
+  <div class="content-box">
+    <div class="two-btns">
+      <button class="act-btn" id="btn-idiom" onclick="startIdiom()">
+        <span class="act-emoji">🧩</span>
+        <span>成語大挑戰</span>
+        <span class="done-check" id="check-idiom" style="display:none">✅</span>
+      </button>
+      <button class="act-btn" id="btn-monopoly" onclick="startMonopoly()">
+        <span class="act-emoji">🎲</span>
+        <span>成語大富翁</span>
+        <span class="done-check" id="check-monopoly" style="display:none">✅</span>
+      </button>
+    </div>
+    <div class="game-area" id="chinese-game"></div>
+  </div>
+</div>
+
+
 <!-- ── 英文課 ── -->
 <div id="branch-english" class="screen branch-page">
   <div class="branch-header" style="width:100%;max-width:720px;">
