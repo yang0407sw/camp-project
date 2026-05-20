@@ -446,45 +446,120 @@ body{font-family:'Noto Sans TC',sans-serif;background:var(--bg);color:var(--dark
     <div>
 
       <div class="branch-title" style="color:#E8659A">
-        🌅 早操
-      </div>
+     🌅 早操
+</div>
 
-      <div class="branch-subtitle">
-        跟著姐姐們一起做早操動作吧！
-      </div>
-
-    </div>
-  </div>
-
-  <div class="content-box">
-
-    <!-- 主選單按鈕 -->
-    <div class="two-btns">
-
-      <button class="act-btn" id="btn-hand" onclick="startHandGame(false)">
-        <span class="act-emoji">👐</span>
-        <span>手部動作</span>
-        <span class="done-check" id="check-hand" style="display:none">
-          ✅
-        </span>
-      </button>
-
-      <button class="act-btn" id="btn-handleg" onclick="startHandGame(true)">
-        <span class="act-emoji">🕺</span>
-        <span>手部＋腿部動作</span>
-        <span class="done-check" id="check-handleg" style="display:none">
-          ✅
-        </span>
-      </button>
-
-    </div>
-
-    <!-- 遊戲區 -->
-    <div class="game-area" id="morning-game"></div>
-
-  </div>
+<div class="branch-subtitle">
+  跟著姐姐們一起做早操動作吧！
+</div>
 
 </div>
+</div>
+
+<div class="content-box">
+
+  <!-- 主選單按鈕 -->
+  <div class="two-btns">
+
+    <button class="act-btn" id="btn-hand" onclick="startHandGame(false)">
+      <span class="act-emoji">👐</span>
+      <span>手部動作</span>
+      <span class="done-check" id="check-hand" style="display:none">
+        ✅
+      </span>
+    </button>
+
+    <button class="act-btn" id="btn-handleg" onclick="startHandGame(true)">
+      <span class="act-emoji">🕺</span>
+      <span>手部＋腿部動作</span>
+      <span class="done-check" id="check-handleg" style="display:none">
+        ✅
+      </span>
+    </button>
+
+  </div>
+
+  <!-- 遊戲區 -->
+  <div class="game-area" id="morning-game"></div>
+
+</div>
+
+</div>
+
+<style>
+
+/* 分隔線 */
+.game-line{
+    border: none;
+    height: 3px;
+    background: linear-gradient(to right,#FFD1E6,#E8659A,#FFD1E6);
+    margin: 25px auto;
+    width: 80%;
+    border-radius: 999px;
+}
+
+/* 提示燈 */
+.light-area{
+    text-align:center;
+    margin-top:20px;
+}
+
+.light-title{
+    font-size:22px;
+    font-weight:700;
+    color:#C2185B;
+    margin-bottom:10px;
+}
+
+.light-box{
+    font-size:60px;
+    background:#FFF0F6;
+    border:3px solid #E8659A;
+    border-radius:20px;
+    width:120px;
+    height:120px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    margin:auto;
+    box-shadow:0 4px 12px rgba(0,0,0,.15);
+}
+
+/* 玩家區 */
+.player-area{
+    text-align:center;
+}
+
+.player-title{
+    font-size:22px;
+    font-weight:700;
+    color:#C2185B;
+    margin-bottom:18px;
+}
+
+.choice-buttons{
+    display:flex;
+    justify-content:center;
+    gap:20px;
+}
+
+.choice-btn{
+    width:110px;
+    height:110px;
+    border:none;
+    border-radius:20px;
+    font-size:50px;
+    background:#FFF0F6;
+    cursor:pointer;
+    transition:.2s;
+    box-shadow:0 4px 10px rgba(0,0,0,.12);
+}
+
+.choice-btn:hover{
+    transform:scale(1.06);
+}
+
+</style>
 
 <script>
 
@@ -509,11 +584,12 @@ function startHandGame(isHandLeg){
 
       </div>
 
-     
+      <!-- 分隔線 -->
+      <hr class="game-line">
+
       <!-- 玩家選擇 -->
       <div class="player-area">
-<!-- 分隔線 -->
-<hr class="game-line">
+
         <div class="player-title">
           🎯 請點選和提示燈一樣的圖案
         </div>
@@ -557,6 +633,9 @@ function checkMorningAnswer(btn, choice, answer){
 
     }
 }
+
+</script> 
+
 
 </script>
 <!-- ── 國文課 ── -->
